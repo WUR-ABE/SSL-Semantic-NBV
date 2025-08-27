@@ -1,4 +1,4 @@
-# Robot harvester: works perfect
+# SSL-Semantic-NBV
 ![robot](assets/self_supervised_learning_framework.png "robot")
 
 ## About
