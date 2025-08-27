@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<robot name="l515" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find realsense2_description)/urdf/_l515.urdf.xacro" />
+  <xacro:include filename="$(find camera_description)/urdf/l515_kinect_plugin.urdf.xacro" />
+
+  <xacro:property name="prefix" value="" />
+  <xacro:property name="name" value="camera" />
+
+  <link name="base_link" />
+  <xacro:sensor_l515 parent="base_link" name="camera" use_nominal_extrinsics="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:sensor_l515>
+  <xacro:plugin_l515 parent="${name}_link" name="${name}" />
+
+  <!-- Plugin for ros_control. -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+  </gazebo>
+</robot>

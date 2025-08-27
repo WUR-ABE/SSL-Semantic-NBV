@@ -1,0 +1,5 @@
+# Octomap converted to points
+geometry_msgs/Point[] cloud
+---
+# Pose of the clustered objects
+geometry_msgs/PoseArray poses

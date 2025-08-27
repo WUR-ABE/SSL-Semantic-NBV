@@ -1,0 +1,13 @@
+<launch>
+  <!-- start simulated world -->
+  <arg name="model" default="tomato01"/>
+  <include file="$(find greenhouse_gazebo)/launch/greenhouse_gazebo.launch">
+    <arg name="model" value="$(arg model)"/>
+  </include>
+  <!-- load urdf -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find camera_description)/urdf/l515.xacro'" />
+  <!-- spawn robot in gazebo -->
+  <node name="l515_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model l515 -x -1.0 -z 0.5" />
+  <!-- world frame -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_base_link" args="-1 0 0.5 0 0 0 1 world base_link" />
+</launch>

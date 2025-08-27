@@ -1,0 +1,25 @@
+# ninja log v5
+1	1074	1736337205179036577	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/hashmap/hashmap_cpu.o	be634209f7885bfb
+1	85762	1736337289847429889	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/devoxelize/devoxelize_cpu.o	52f2b5b9077ff4cc
+2	86095	1736337290179431432	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/count_cpu.o	913a2f57d9586b77
+0	87007	1736337291091435669	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/convolution/convolution_gather_scatter_cpu.o	19673df9fea43e60
+1	87588	1736337291675438381	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/hash/hash_cpu.o	fc23ad33ccf765eb
+2	126041	1736337330131617023	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/count_cuda.o	54a81b83c83d0e9b
+86095	128325	1736337332403627576	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/query_cpu.o	88e720d2b14f4fec
+1	130374	1736337334471637183	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/convolution/convolution_gather_scatter_cuda.o	85e01e2bff274d89
+1	131724	1736337335823643464	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/hash/hash_cuda.o	cade7f26da7c929c
+1074	134890	1736337338987658161	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/downsample_cuda.o	d2f70447774ac205
+0	141520	1736337345611688932	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/convolution/convolution_forward_fetch_on_demand_cuda.o	846e672b7f02142c
+0	151398	1736337355491734827	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/convolution/convolution_forward_implicit_gemm_cuda.o	bdddfa3809a4685
+1	154237	1736337358327748002	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/devoxelize/devoxelize_cuda.o	50f3ca0c6c0a2bba
+0	162949	1736337367043788491	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/convolution/convolution_forward_implicit_gemm_sorted_cuda.o	62bc3bdb99e59f4a
+131724	165874	1736337369963802055	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/voxelize/voxelize_cpu.o	819f40c96ddcf27b
+85769	167803	1736337371903811066	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/exclusive_scan_cuda.o	4f0cf519b9a81837
+0	169670	1736337373763819707	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/convolution/convolution_backward_wgrad_implicit_gemm_cuda.o	b3eda8208006ee2c
+0	171070	1736337375171826248	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/convolution/convolution_backward_wgrad_implicit_gemm_sorted_cuda.o	4de87aab6ef3d24f
+87588	174497	1736337378595842153	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/reduce_bitmask_cuda.o	81304c5975e1fcc6
+87007	175185	1736337379287845368	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/query_cuda.o	6f8513625caf98df
+126041	182543	1736337386643879539	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/reorder_map_cuda.o	ce011dfce7fdc185
+10	31992	1736337424720056415	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/voxelize/voxelize_cuda.o	f9a3d6c9cb47032e
+9	32494	1736337425220058737	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/others/sparsemapping_cuda.o	241489e5a4db4a0c
+9	37526	1736337430256082131	/home/jianchao/ros_workspace/paper4_semantic_nbv/src/torchsparse/build/temp.linux-x86_64-cpython-38/torchsparse/backend/pybind_cuda.o	c200a505fa125495

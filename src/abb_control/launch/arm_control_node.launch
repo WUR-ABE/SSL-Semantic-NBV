@@ -1,0 +1,7 @@
+<launch>
+  <!-- abb arm control -->
+  <arg name="usecase" default="greenhouse" doc="Flexcraft usecase" />
+  <rosparam file="$(find abb_control)/config/arm_control.yaml" command="load" subst_value="true" />
+  <rosparam file="$(find abb_control)/config/$(arg usecase)_obstacles.yaml" command="load" subst_value="true" />
+  <node name="abb_control" pkg="abb_control" type="arm_control_node" output="screen" args="$(arg usecase)" />
+</launch>

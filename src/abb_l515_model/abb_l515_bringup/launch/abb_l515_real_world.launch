@@ -1,0 +1,24 @@
+<launch>
+  <!-- abb interface -->
+  <arg name="robot_ip"/>
+  <include file="$(find abb_irb1200_support)/launch/robot_interface_download_irb1200_5_90.launch" >
+    <arg name="robot_ip" value="$(arg robot_ip)"/>
+  </include>
+
+  <!-- load urdf -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find abb_l515_description)/urdf/abb_l515.xacro'" />
+
+  <!-- camera -->
+  <include file="$(find realsense2_camera)/launch/rs_rgbd.launch" >
+      <arg name="align_depth" value="true" />
+      <arg name="depth_width" value="640" />
+      <arg name="depth_height" value="480" />
+      <arg name="depth_fps" value="30" />
+      <arg name="color_width" value="960" />
+      <arg name="color_height" value="540" />
+      <arg name="color_fps" value="30" />
+  </include>
+
+  <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure"/>
+  
+</launch>
