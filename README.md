@@ -96,13 +96,3 @@ roslaunch drl_nbv_plan ssl_nbv_test_semantic_awareness.launch
 # compare with different planners in real world
 roslaunch drl_nbv_plan ssl_nbv_compare_diff_planners_RW.launch 
 ```
-
-## Citation
-```
-xxxx
-```
-
-## Funding
-This research is part of ..... 
-
-<img src="https://github.com/user-attachments/assets/45e9ea07-def7-407a-9e86-6a30f0d315df" alt="wageningen university logo" height="50">
