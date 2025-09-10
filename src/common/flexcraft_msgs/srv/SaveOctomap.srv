@@ -1,4 +1,0 @@
-string file_path
-int32 step
----
-bool success

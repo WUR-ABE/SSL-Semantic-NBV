@@ -1,5 +1,0 @@
-<launch>
-  <!-- viewpoint sampling node -->
-  <node name="plant_creation" type="plant_spawner.py" pkg="plant_creation" output="screen" />
-
-</launch>

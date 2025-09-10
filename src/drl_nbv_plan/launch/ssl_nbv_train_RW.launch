@@ -1,5 +1,0 @@
-<launch>
-    <!-- launch Rviz for visualization -->
-    <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find camera_bringup)/rviz/camera_model.rviz" /> -->
-    <node name="ssl_nbv_train_rw" type="ssl_nbv_train_rw.py" pkg="drl_nbv_plan" output="screen" />
-</launch>

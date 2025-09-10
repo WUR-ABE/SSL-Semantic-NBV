@@ -1,5 +1,0 @@
-<launch>
-    <!-- launch Rviz for visualization -->
-    <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find camera_bringup)/rviz/camera_model.rviz" /> -->
-    <node name="ssl_nbv_ablation_test" type="ablation_test.py" pkg="drl_nbv_plan" output="screen" />
-</launch>

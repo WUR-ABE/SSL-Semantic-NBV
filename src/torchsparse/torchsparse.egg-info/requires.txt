@@ -1,8 +1,0 @@
-numpy
-backports.cached_property
-tqdm
-typing-extensions
-wheel
-rootpath
-torch
-torchvision
