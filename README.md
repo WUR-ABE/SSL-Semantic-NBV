@@ -1,9 +1,8 @@
 # SSL-Semantic-NBV
 
 <p align="center">
-  <a href="./index.html"><strong>Project Page</strong></a> ·
-  <a href="https://github.com/WUR-ABE/SSL-Semantic-NBV"><strong>Project Repository</strong></a> ·
-  <a href="#citation"><strong>Paper citation</strong></a>
+  <a href="./index.html"><strong>🌐 Project</strong></a> ·
+  <a href=""><strong>📄 Paper</strong></a>
 </p>
 ## About
 Accurate 3D reconstruction of task-relevant plant parts is essential for agricultural robotics applications such as harvesting, deleafing, and phenotyping, but remains challenging due to severe occlusions and plant variations. Learning-based next-best-view (NBV) methods address this by actively repositioning the camera to maximize predicted information gain (IG) via neural networks, but they require large amounts of IG-annotated data. We present SSL-Semantic-NBV, a target-aware NBV planning framework for efficient reconstruction of specific plant parts, including fruits, nodes, and whole plant, through robotic self-supervised learning. To enable efficient online learning, the framework introduces a novel IG metric for sparsely visible targets, a View Trajectory Network to encode viewpoint history, and a loss function that improves training sample efficiency under weak supervision. A GroIMP-based pipeline is introduced to automatically generate structurally realistic synthetic plants for network pre-training, facilitating real-world deployment. Experiments in simulation and real world show that SSL-Semantic-NBV outperforms baseline NBV and non-NBV methods in reconstruction efficiency and occlusion handling, while requiring significantly fewer training cycles than our previous SSL-NBV. Notably, SSL-Semantic-NBV automates the entire training process, enabling lifelong adaptation without human intervention.
