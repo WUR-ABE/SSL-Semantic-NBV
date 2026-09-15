@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite the IROS 2026 paper below."
+title: "SSL-Semantic-NBV"
+type: software
+authors:
+  - family-names: Ci
+    given-names: Jianchao
+  - family-names: Smoleňová
+    given-names: Katarína
+  - family-names: Wang
+    given-names: Xin
+  - family-names: Streit
+    given-names: Axel
+  - family-names: van Henten
+    given-names: Eldert J.
+  - family-names: Kootstra
+    given-names: Gert
+repository-code: "https://github.com/WUR-ABE/SSL-Semantic-NBV"
+url: "https://github.com/WUR-ABE/SSL-Semantic-NBV"
+preferred-citation:
+  type: conference-paper
+  authors:
+    - family-names: Ci
+      given-names: Jianchao
+    - family-names: Smoleňová
+      given-names: Katarína
+    - family-names: Wang
+      given-names: Xin
+    - family-names: Streit
+      given-names: Axel
+    - family-names: van Henten
+      given-names: Eldert J.
+    - family-names: Kootstra
+      given-names: Gert
+  title: "SSL-Semantic-NBV: A Self-Supervised Learning-Based NBV for Target-Aware 3D Reconstruction in Agricultural Robotics"
+  conference: "2026 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)"
+  year: 2026
