@@ -1,8 +1,0 @@
-geometry_msgs/PoseArray candidates
-geometry_msgs/Point[] bbx_centers
-geometry_msgs/Point[] bbx_sizes
-int32 class_id
----
-geometry_msgs/Pose nbv_pose
-int32 nbv_index
-bool success

@@ -1,9 +1,0 @@
-string sampler_type
-int32 num_samples
-geometry_msgs/Point center
-float32 radius
-float32 min_theta
-float32 max_theta
-float32 length
----
-geometry_msgs/PoseArray view_samples
