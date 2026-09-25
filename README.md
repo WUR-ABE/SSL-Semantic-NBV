@@ -1,8 +1,8 @@
 # SSL-Semantic-NBV
 
 <p align="center">
-  <a href="./index.html"><img src="assets/project-icon.svg" width="56" height="56" alt=""> <strong>Project</strong></a> ·
-  <a href=""><img src="assets/paper-icon.svg" width="56" height="56" alt=""> <strong>Paper</strong></a>
+  <a href="https://wur-abe.github.io/SSL-Semantic-NBV/"><img src="assets/project-icon.svg" width="56" height="56" alt=""> <strong>Project</strong></a> ·
+  <a href="https://rasevents.org/uploads/documents/pdfviewer/06/9c/232604-0784.pdf"><img src="assets/paper-icon.svg" width="56" height="56" alt=""> <strong>Paper</strong></a>
 </p>
 
 <p align="center">
@@ -105,10 +105,10 @@ roslaunch drl_nbv_plan ssl_nbv_compare_diff_planners_RW.launch
 If you use this project, please cite the IROS 2026 paper:
 
 ```bibtex
-@inproceedings{ci2026sslsemanticnbv,
-  title = {{SSL-Semantic-NBV}: A Self-Supervised Learning-Based {NBV} for Target-Aware 3D Reconstruction in Agricultural Robotics},
-  author = {Ci, Jianchao and Smolenova, Katarina and Wang, Xin and Streit, Axel and van Henten, Eldert J. and Kootstra, Gert},
+@inproceedings{ci2026,
+  author = {Ci, Jianchao and Smolenova, Katarina and Wang, Xin and Streit, Axel and Van Henten, Eldert J. and Kootstra, Gert},
+  title = {{SSL-Semantic-NBV: A Self-Supervised Learning-Based NBV for Target-Aware 3D Reconstruction in Agricultural Robotics}},
   booktitle = {2026 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  year = {2026}
+  year = {2026},
 }
 ```
