@@ -1,0 +1,273 @@
+#!/usr/bin/env python3
+"""Fine-tune SSL-Semantic-NBV on real-world data with SAM3 fruit masks as semantic labels.
+
+Reads the point clouds with SAM3 fruit labels from $NBV_DATA_ROOT/real_world/plant<i>/pcd_sam3/. The encoder is initialised
+from <models_dir>/0_<recon_target>_<planner>/<planner>_best_model (override with `pretrained_ckpt`).
+Checkpoints: $NBV_MODELS/2_<recon_target>_sam3_<planner>/2_<recon_target>_sam3_<planner>_epi_<N>
+
+Settings (private ROS param `~name` or environment variable `NAME`):
+    planners [ssl_semantic_nbv_NOCOLOR]  recon_target [FRUIT]  max_episode [2000]
+    batch_size [32]  buffer_size [500]  update_number [10]  max_step [15]
+    valid_interval [100]  valid_episodes [10]  save_interval [200]  best_after [500]
+    pretrained_ckpt, models_dir [$NBV_MODELS], out_dir, overwrite [false]
+"""
+
+from utils.config import get_param
+from utils.paths import MODELS_DIR, model_dir
+from drl_environment.environment_real_world_sam3 import Environment_RW
+import rospy
+import time
+from torch.utils.tensorboard import SummaryWriter
+import os
+from agent import AgentGlobal, AgentGlobalWork1
+from tqdm import tqdm
+import torch
+import numpy as np
+
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+
+
+class Trainer:
+    def __init__(self):
+        planners = get_param("planners", ["ssl_semantic_nbv_NOCOLOR"])
+        self.config = {
+            "pc_size": 512,
+            "planners": planners,
+            'octo_resolution': 0.006,
+            'experiment': 2,
+            'recon_target': get_param("recon_target", "FRUIT"),
+            'max_step': get_param("max_step", 15),
+        }
+        # Use actual experiment, target, and planner in checkpoint name
+        self.checkpoint_prefix = f"{self.config['experiment']}_{self.config['recon_target']}_sam3_{self.config['planners'][0]}"
+        self.models_dir = os.path.expanduser(get_param("models_dir", MODELS_DIR))
+        self.data_save_dir = os.path.expanduser(
+            get_param("out_dir", os.path.join(self.models_dir, self.checkpoint_prefix))
+        )
+        existing = (
+            [f for f in os.listdir(self.data_save_dir) if f.startswith(self.checkpoint_prefix)]
+            if os.path.isdir(self.data_save_dir)
+            else []
+        )
+        if existing and not get_param("overwrite", False):
+            raise RuntimeError(
+                "%s already contains checkpoints (%s). Set overwrite:=true or choose another "
+                "out_dir / NBV_MODELS." % (self.data_save_dir, existing[0])
+            )
+        os.makedirs(self.data_save_dir, exist_ok=True)
+        print("Saving checkpoints to %s" % self.data_save_dir)
+
+        self.environment = Environment_RW(self.config)
+
+        self.max_episode = get_param("max_episode", 2000)
+        self.valid_interval = get_param("valid_interval", 100)
+        self.valid_episodes = get_param("valid_episodes", 10)
+        self.save_interval = get_param("save_interval", 200)
+        self.best_after = get_param("best_after", 500)
+        self.total_iteration_count = 0
+        self.update_interval = self.config['max_step']  # update interval of iterations
+        self.batch_size = get_param("batch_size", 32)
+        self.buffer_size = get_param("buffer_size", 500)
+        self.update_number = get_param("update_number", 10)
+        self.episodic_loss = float("inf")
+        self.start_training = False
+
+        self.log_writer = SummaryWriter(os.path.join(self.data_save_dir, "log"))
+
+    def update_mode(self, mode):
+        self.agent.update_mode(mode=mode)
+        self.environment.update_mode(mode=mode)
+
+    def create_agent(self):
+        if self.planner.startswith('ssl_semantic_nbv_NOCOLOR'):
+            self.agent = AgentGlobal(
+                self.environment.view_range['num_col'] * self.environment.view_range['num_row'],
+                self.planner,
+            )
+            self.agent.config_train(
+                buffer_size=self.buffer_size,
+                batch_size=self.batch_size,
+                update_number=self.update_number,
+            )
+            # Load checkpoint as requested (best model inside the directory)
+            pretrained = get_param(
+                "pretrained_ckpt",
+                os.path.join(
+                    model_dir(0, self.config['recon_target'], self.planner, self.models_dir),
+                    '%s_best_model' % self.planner,
+                ),
+            )
+            print("Initialising encoder from %s" % pretrained)
+            self.agent.load_encoder_only(pretrained)
+
+        elif self.planner.startswith('ssl_nbv'):
+            self.agent = AgentGlobalWork1(
+                self.environment.view_range['num_col'] * self.environment.view_range['num_row']
+            )
+            self.agent.config_train(
+                buffer_size=self.buffer_size,
+                batch_size=self.batch_size,
+                update_number=self.update_number,
+            )
+
+    def run(self):
+        print(
+            "========================================Start running========================================"
+        )
+        for planner in self.config['planners']:
+            self.planner = planner
+            self.log_name = (
+                'ssl_semantic_nbv_NOCOLOR'
+                if self.planner.startswith('ssl_semantic_nbv_NOCOLOR')
+                else 'ssl_nbv'
+            )
+            valid_loss = float("inf")
+            self.create_agent()
+
+            for i in tqdm(range(self.max_episode + 1)):
+                self.episode_count = i
+                print("\nEpisode:{}".format(self.episode_count))
+                print(
+                    "Current learning rate : {}".format(
+                        self.agent.optimizer.state_dict()["param_groups"][0]["lr"]
+                    )
+                )
+                print("Current exploration rate: {}".format(self.agent.get_epsilon()))
+                self.update_mode(mode="train")
+
+                train_loss, start_training = self.train_one_traj_global()
+
+                if self.episode_count % self.valid_interval == 0:
+                    print("===========Validating=========")
+                    self.update_mode(mode="valid")
+                    valid_loss = self.valid_n_times(self.valid_episodes)
+                    self.log_writer.add_scalar(
+                        "%s/Valid Loss" % self.log_name, valid_loss, self.episode_count
+                    )
+
+                if start_training:
+                    self.log_writer.add_scalar(
+                        "%s/Train Loss" % self.log_name, train_loss, self.episode_count
+                    )
+
+                if self.episode_count % self.save_interval == 0:
+                    self.agent.save_model(
+                        "{}/{}_epi_{}".format(
+                            self.data_save_dir, self.checkpoint_prefix, self.episode_count
+                        )
+                    )
+
+                if valid_loss < self.episodic_loss and self.episode_count > self.best_after:
+                    self.agent.save_model(
+                        "{}/{}_best_model".format(self.data_save_dir, self.checkpoint_prefix)
+                    )
+                    self.episodic_loss = valid_loss
+
+    def valid_once_global(self):
+        done = False
+        current_acc, current_viewstate, _, _ = self.environment.reset_global(planner=self.planner)
+        self.viewpoints_1d = self.environment.viewpoints_1d
+
+        valid_loss_one_traj = 0
+        coverage_list = []
+
+        while not done:
+            # recalculate target lable based on current accumulated point cloud
+            pcd_acc = self.environment.pcd_acc[..., :6].clone()  # (N, 6) xyzrgb
+            pcd_acc = self.environment.nbv_compute.classify_points_use_bbox(
+                pcd_acc, recon_target=self.config['recon_target']
+            )
+            _, cr = self.environment.nbv_compute.cal_coverage(
+                pcd_acc,
+            )
+            print(cr)
+
+            coverage_list.append(cr)
+
+            ig_value, nbv_index = self.agent.act(
+                self.episode_count,
+                current_acc,
+                current_viewstate,
+            )
+            print(nbv_index)
+            (
+                next_acc,
+                next_viewstate,
+                reward,
+                done,
+                _,
+            ) = self.environment.step_global(nbv_index)
+
+            if self.planner.startswith('ssl_semantic_nbv'):
+                if 'NOLF' in self.planner.split('_'):
+                    loss = (ig_value[0, nbv_index] - reward[0, nbv_index]) ** 2
+                else:
+                    reward_filled = torch.where(
+                        torch.isnan(reward), torch.tensor(ig_value), reward
+                    ).detach()
+                    loss = torch.sum((reward_filled - torch.tensor(ig_value)) ** 2)
+
+            elif self.planner == 'ssl_nbv':
+                loss = (ig_value[0, nbv_index] - reward[0, nbv_index]) ** 2
+
+            valid_loss_one_traj += loss.item()
+
+            current_acc = next_acc
+            current_viewstate = next_viewstate
+        return valid_loss_one_traj, np.trapz(np.array(coverage_list)) / (
+            self.environment.max_step - 1
+        )
+
+    def train_one_traj_global(self):
+        done = False
+        loss_per_traj = 0
+
+        # Get initial state
+        current_acc, current_viewstate, _, _ = self.environment.reset_global(planner=self.planner)
+
+        while not done:
+            pre_ig, nbv_index = self.agent.act(
+                self.episode_count,
+                current_acc,
+                current_viewstate,
+            )
+            # Take action in environment
+            next_acc, next_viewstate, reward, done, _ = self.environment.step_global(nbv_index)
+
+            self.agent.observe(
+                pcd=current_acc,
+                viewstate=current_viewstate,
+                nbv_index=nbv_index,
+                reward=reward,
+                done=done,
+            )
+
+            # Update current state
+            current_acc = next_acc
+            current_viewstate = next_viewstate
+
+        # Update network if enough samples
+        if done and len(self.agent.replay_buffer.buffer) > self.batch_size:
+            loss_per_traj = self.agent.update_network(self.episode_count)
+            self.start_training = True
+
+        return loss_per_traj, self.start_training
+
+    def valid_n_times(self, n):
+        valid_loss = 0
+        auc = 0
+        for i in range(n):
+            print("===========Validating:{}=========".format(i))
+            valid_loss_one_traj, auc_traj = self.valid_once_global()
+            valid_loss += valid_loss_one_traj
+            auc += auc_traj
+
+        self.log_writer.add_scalar("%s/AUC" % self.log_name, auc / n, self.episode_count)
+
+        return valid_loss / n / self.config['max_step']
+
+
+if __name__ == "__main__":
+    rospy.init_node("ssl_nbv_train")
+    trainer = Trainer()
+    trainer.run()

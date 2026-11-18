@@ -1,0 +1,16 @@
+<launch>
+  <!-- Compare planners on the heavy-occlusion plants (experiment 1). Same arguments as ssl_nbv_compare_diff_planners.launch. -->
+  <arg name="recon_target" default="PLANT"/>
+  <arg name="planners" default="ssl_semantic_nbv_NOCOLOR,ssl_nbv,predefined_global,random_global"/>
+  <arg name="max_test" default="25"/>
+  <arg name="out_dir" default=""/>
+  <include file="$(find drl_nbv_plan)/launch/ssl_nbv_compare_diff_planners.launch">
+    <arg name="experiment" value="1"/>
+    <arg name="max_allowed_step" value="20"/>
+    <arg name="recon_target" value="$(arg recon_target)"/>
+    <arg name="planners" value="$(arg planners)"/>
+    <arg name="max_test" value="$(arg max_test)"/>
+    <arg name="out_dir" value="$(arg out_dir)"/>
+    <arg name="node_name" value="ssl_nbv_compare_diff_planners_heavy_occlusion"/>
+  </include>
+</launch>

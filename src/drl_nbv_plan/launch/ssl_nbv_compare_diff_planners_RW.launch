@@ -1,0 +1,28 @@
+<launch>
+  <!--
+    Compare planners on the recorded real-world plants.
+    roslaunch drl_nbv_plan ssl_nbv_compare_diff_planners_RW.launch recon_target:=FRUIT
+    roslaunch drl_nbv_plan ssl_nbv_compare_diff_planners_RW.launch recon_target:=FRUIT sam3:=true planners:=ssl_semantic_nbv_NOCOLOR
+  -->
+  <arg name="planners" default="ssl_semantic_nbv_NOCOLOR,predefined_global,random_global"/>  <!-- add ssl_nbv if you trained 2_<target>_ssl_nbv -->
+  <arg name="recon_target" default="FRUIT"/>
+  <arg name="sam3" default="false"/>
+  <arg name="demo" default="false"/>      <!-- with sam3: move the simulated arm, needs abb_control running -->
+  <arg name="max_test" default="25"/>
+  <arg name="models_dir" default=""/>
+  <arg name="ssl_semantic_nbv_ckpt" default=""/>
+  <arg name="ssl_nbv_ckpt" default=""/>
+  <arg name="out_dir" default=""/>
+
+  <node name="ssl_nbv_compare_diff_planners_RW" type="compare_diff_planners_RW.py" pkg="drl_nbv_plan" output="screen" required="true">
+    <param name="planners" type="str" value="$(arg planners)"/>
+    <param name="recon_target" value="$(arg recon_target)"/>
+    <param name="sam3" value="$(arg sam3)"/>
+    <param name="demo" value="$(arg demo)"/>
+    <param name="max_test" value="$(arg max_test)"/>
+    <param if="$(eval models_dir != '')" name="models_dir" value="$(arg models_dir)"/>
+    <param if="$(eval ssl_semantic_nbv_ckpt != '')" name="ssl_semantic_nbv_ckpt" value="$(arg ssl_semantic_nbv_ckpt)"/>
+    <param if="$(eval ssl_nbv_ckpt != '')" name="ssl_nbv_ckpt" value="$(arg ssl_nbv_ckpt)"/>
+    <param if="$(eval out_dir != '')" name="out_dir" value="$(arg out_dir)"/>
+  </node>
+</launch>

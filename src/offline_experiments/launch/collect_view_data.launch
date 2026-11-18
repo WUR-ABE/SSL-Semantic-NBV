@@ -1,0 +1,43 @@
+<launch>
+  <!--
+    Step 2 of the pipeline: render per-view point clouds of the tomato plants in Gazebo.
+
+    roslaunch offline_experiments collect_view_data.launch experiment:=0
+    roslaunch offline_experiments collect_view_data.launch plants:=1 x_range:=0 y_range:=0 z_range:=0 rotations:=0   (quick test)
+
+    Output: $NBV_DATA_ROOT/simulation/views/plant<i>/xyzr_<x>_<y>_<z>_<r>/{pcd,view}/
+  -->
+  <arg name="experiment" default="0"/>               <!-- 0: plants 1-10, 1: heavy-occlusion plants 11-20 -->
+  <arg name="plants" default=""/>                    <!-- e.g. "1,2,3"; overrides experiment -->
+  <arg name="out_dir" default=""/>                   <!-- default: $NBV_DATA_ROOT/simulation/views -->
+  <arg name="x_range" default="-20,-10,0,10,20"/>    <!-- cm -->
+  <arg name="y_range" default="-20,-10,0,10,20"/>    <!-- cm -->
+  <arg name="z_range" default="0,20"/>               <!-- cm -->
+  <arg name="rotations" default="0,90,180,270"/>
+  <arg name="view_settle_time" default="10.0"/>
+  <arg name="pose_settle_time" default="5.0"/>
+  <arg name="save_images" default="false"/>
+  <arg name="gui" default="true"/>                   <!-- Gazebo window; false renders faster -->
+  <arg name="rviz" default="true"/>                  <!-- RViz window; false renders faster -->
+
+  <!-- Gazebo + simulated L515 camera + TF -->
+  <include file="$(find camera_bringup)/launch/camera_gazebo.launch">
+    <arg name="gui" value="$(arg gui)"/>
+  </include>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+  <node if="$(arg rviz)" type="rviz" name="rviz" pkg="rviz" args="-d $(find camera_bringup)/rviz/camera_model.rviz"/>
+
+  <node name="collect_view_data" type="collect_view_data.py" pkg="offline_experiments" output="screen" required="true">
+    <param name="experiment" value="$(arg experiment)"/>
+    <param if="$(eval plants != '')" name="plants" type="str" value="$(arg plants)"/>
+    <param if="$(eval out_dir != '')" name="out_dir" value="$(arg out_dir)"/>
+    <param name="x_range" type="str" value="$(arg x_range)"/>
+    <param name="y_range" type="str" value="$(arg y_range)"/>
+    <param name="z_range" type="str" value="$(arg z_range)"/>
+    <param name="rotations" type="str" value="$(arg rotations)"/>
+    <param name="view_settle_time" value="$(arg view_settle_time)"/>
+    <param name="pose_settle_time" value="$(arg pose_settle_time)"/>
+    <param name="save_images" value="$(arg save_images)"/>
+  </node>
+</launch>

@@ -1,0 +1,25 @@
+<launch>
+  <!--
+    Semantic-awareness test: model trained for train_target, coverage measured on recon_target.
+    roslaunch drl_nbv_plan ssl_nbv_test_semantic_awareness.launch train_target:=NODE recon_target:=PLANT
+  -->
+  <arg name="planner" default="ssl_semantic_nbv_NOCOLOR"/>
+  <arg name="train_target" default="NODE"/>
+  <arg name="recon_target" default="PLANT"/>
+  <arg name="experiment" default="0"/>
+  <arg name="max_test" default="25"/>
+  <arg name="ckpt" default=""/>
+  <arg name="models_dir" default=""/>
+  <arg name="out_dir" default=""/>
+
+  <node name="ssl_nbv_test_semantic_awareness" type="test_semantic_awareness.py" pkg="drl_nbv_plan" output="screen" required="true">
+    <param name="planner" value="$(arg planner)"/>
+    <param name="train_target" value="$(arg train_target)"/>
+    <param name="recon_target" value="$(arg recon_target)"/>
+    <param name="experiment" value="$(arg experiment)"/>
+    <param name="max_test" value="$(arg max_test)"/>
+    <param if="$(eval ckpt != '')" name="ckpt" value="$(arg ckpt)"/>
+    <param if="$(eval models_dir != '')" name="models_dir" value="$(arg models_dir)"/>
+    <param if="$(eval out_dir != '')" name="out_dir" value="$(arg out_dir)"/>
+  </node>
+</launch>

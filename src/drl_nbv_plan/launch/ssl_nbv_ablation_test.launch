@@ -1,0 +1,24 @@
+<launch>
+  <!--
+    Ablation study over training checkpoints.
+    roslaunch drl_nbv_plan ssl_nbv_ablation_test.launch targets:=FRUIT
+    Needs $NBV_MODELS/<experiment>_<target>_<planner>/<planner>_model_epi_<ckpt> for every planner/target/ckpt.
+  -->
+  <arg name="planners" default="ssl_semantic_nbv_NOCOLOR,ssl_semantic_nbv_NOPE_NOCOLOR,ssl_semantic_nbv_NOPE_NOLF_NOCOLOR,ssl_semantic_nbv_NOPE_NOLF_NOIG_NOCOLOR"/>
+  <arg name="targets" default="PLANT,FRUIT,NODE"/>
+  <arg name="experiment" default="0"/>
+  <arg name="ckpts" default="0,200,400,600,800,1000,1200,1400,1600,1800,2000"/>
+  <arg name="max_test" default="25"/>
+  <arg name="models_dir" default=""/>
+  <arg name="out_dir" default=""/>
+
+  <node name="ssl_nbv_ablation_test" type="ablation_test.py" pkg="drl_nbv_plan" output="screen" required="true">
+    <param name="planners" type="str" value="$(arg planners)"/>
+    <param name="targets" type="str" value="$(arg targets)"/>
+    <param name="experiment" value="$(arg experiment)"/>
+    <param name="ckpts" type="str" value="$(arg ckpts)"/>
+    <param name="max_test" value="$(arg max_test)"/>
+    <param if="$(eval models_dir != '')" name="models_dir" value="$(arg models_dir)"/>
+    <param if="$(eval out_dir != '')" name="out_dir" value="$(arg out_dir)"/>
+  </node>
+</launch>

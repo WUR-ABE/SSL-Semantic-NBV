@@ -1,0 +1,39 @@
+# catkin workspace artifacts
+/build/
+/devel/
+/install/
+/logs/
+src/install/
+.catkin_tools/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Large assets (download separately, see README)
+src/drl_nbv_plan/materials/train/*
+src/drl_nbv_plan/materials/results/
+!src/drl_nbv_plan/materials/train/README.md
+src/greenhouse_gazebo/meshes/tomato/meshes/*.dae
+src/sam3_detector/materials/
+src/torchsparse/
+src/extras/
+*.pth
+*.pt
+*.ckpt
+*.7z
+*.zip
+events.out.tfevents.*
+
+# downloaded data archives
+*.tar.gz
+src/CMakeLists.txt

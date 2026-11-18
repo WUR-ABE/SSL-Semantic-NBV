@@ -1,0 +1,17 @@
+# Python dependencies of SSL-Semantic-NBV (Python 3.8).
+# Install PyTorch, PyTorch3D and torch-scatter first (see README), then:
+#   uv pip install -r requirements.txt
+rospkg
+catkin_pkg
+pyyaml
+defusedxml
+numpy<1.25          # torch 1.11 is not compatible with numpy 2
+scipy
+pandas
+matplotlib
+opencv-python
+open3d
+tensorboard
+tqdm
+pfrl
+pytransform3d

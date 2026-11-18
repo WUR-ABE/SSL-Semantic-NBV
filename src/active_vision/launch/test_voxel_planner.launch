@@ -1,0 +1,6 @@
+<launch>
+  <rosparam file="$(find nbv_data_collection)/config/sample_viewpoints.yaml" command="load" subst_value="true" />
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find active_vision)/config/rviz/occupancy_grid_display.rviz"/>
+
+  <node name="test_active_vision" type="test_active_vision.py" pkg="active_vision" output="screen" />
+</launch>

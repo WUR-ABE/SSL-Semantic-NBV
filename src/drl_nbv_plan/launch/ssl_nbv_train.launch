@@ -1,0 +1,32 @@
+<launch>
+  <!--
+    Self-supervised training in simulation (offline, uses the per-view data in $NBV_DATA_ROOT).
+    roslaunch drl_nbv_plan ssl_nbv_train.launch recon_target:=FRUIT experiment:=0 planners:=ssl_semantic_nbv_NOCOLOR
+    Checkpoints: $NBV_MODELS/<experiment>_<recon_target>_<planner>/
+  -->
+  <arg name="planners" default="ssl_semantic_nbv_NOCOLOR"/>  <!-- comma-separated; also ssl_nbv and the _NOPE/_NOLF/_NOIG ablations -->
+  <arg name="experiment" default="0"/>                       <!-- 0: normal plants, 1: heavy occlusion -->
+  <arg name="recon_target" default="PLANT"/>                 <!-- PLANT, FRUIT, NODE -->
+  <arg name="max_episode" default="2000"/>
+  <arg name="valid_interval" default="100"/>
+  <arg name="valid_episodes" default="10"/>
+  <arg name="save_interval" default="200"/>
+  <arg name="best_after" default="1000"/>
+  <arg name="out_dir" default=""/>
+  <arg name="overwrite" default="false"/>
+  <arg name="rviz" default="false"/>
+
+  <node if="$(arg rviz)" type="rviz" name="rviz" pkg="rviz" args="-d $(find camera_bringup)/rviz/camera_model.rviz"/>
+  <node name="ssl_nbv_train" type="ssl_nbv_train.py" pkg="drl_nbv_plan" output="screen" required="true">
+    <param name="planners" type="str" value="$(arg planners)"/>
+    <param name="experiment" value="$(arg experiment)"/>
+    <param name="recon_target" value="$(arg recon_target)"/>
+    <param name="max_episode" value="$(arg max_episode)"/>
+    <param name="valid_interval" value="$(arg valid_interval)"/>
+    <param name="valid_episodes" value="$(arg valid_episodes)"/>
+    <param name="save_interval" value="$(arg save_interval)"/>
+    <param name="best_after" value="$(arg best_after)"/>
+    <param if="$(eval out_dir != '')" name="out_dir" value="$(arg out_dir)"/>
+    <param name="overwrite" value="$(arg overwrite)"/>
+  </node>
+</launch>

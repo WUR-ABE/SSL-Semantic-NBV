@@ -1,0 +1,31 @@
+<launch>
+  <!--
+    Compare planners in simulation.
+    roslaunch drl_nbv_plan ssl_nbv_compare_diff_planners.launch recon_target:=FRUIT
+    Checkpoints are read from $NBV_MODELS/<experiment>_<recon_target>_<planner>/ (see ssl_nbv_train.launch).
+  -->
+  <arg name="planners" default="ssl_semantic_nbv_NOCOLOR,ssl_nbv,predefined_global,random_global"/>
+  <arg name="experiment" default="0"/>          <!-- 0: normal plants, 1: heavy occlusion -->
+  <arg name="recon_target" default="PLANT"/>    <!-- PLANT, FRUIT, NODE -->
+  <arg name="max_test" default="25"/>
+  <arg name="max_step" default="15"/>
+  <arg name="max_allowed_step" default="15"/>
+  <arg name="models_dir" default=""/>           <!-- default: $NBV_MODELS -->
+  <arg name="ssl_semantic_nbv_ckpt" default=""/>
+  <arg name="ssl_nbv_ckpt" default=""/>
+  <arg name="out_dir" default=""/>              <!-- default: $NBV_MATERIALS/results/compare_diff_planners/<timestamp> -->
+  <arg name="node_name" default="ssl_nbv_compare_diff_planners"/>
+
+  <node name="$(arg node_name)" type="compare_diff_planners.py" pkg="drl_nbv_plan" output="screen" required="true">
+    <param name="planners" type="str" value="$(arg planners)"/>
+    <param name="experiment" value="$(arg experiment)"/>
+    <param name="recon_target" value="$(arg recon_target)"/>
+    <param name="max_test" value="$(arg max_test)"/>
+    <param name="max_step" value="$(arg max_step)"/>
+    <param name="max_allowed_step" value="$(arg max_allowed_step)"/>
+    <param if="$(eval models_dir != '')" name="models_dir" value="$(arg models_dir)"/>
+    <param if="$(eval ssl_semantic_nbv_ckpt != '')" name="ssl_semantic_nbv_ckpt" value="$(arg ssl_semantic_nbv_ckpt)"/>
+    <param if="$(eval ssl_nbv_ckpt != '')" name="ssl_nbv_ckpt" value="$(arg ssl_nbv_ckpt)"/>
+    <param if="$(eval out_dir != '')" name="out_dir" value="$(arg out_dir)"/>
+  </node>
+</launch>

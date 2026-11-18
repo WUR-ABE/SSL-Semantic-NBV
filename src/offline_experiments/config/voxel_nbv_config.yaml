@@ -1,0 +1,5 @@
+agent:
+    frames:
+        world_frame_id: "world"
+        base_frame_id: "base_link"
+        camera_frame_id: "camera_color_optical_frame"

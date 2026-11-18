@@ -1,0 +1,21 @@
+<launch>
+  <!--
+    Fine-tune on real-world data with SAM3 fruit masks as semantic labels.
+    roslaunch drl_nbv_plan ssl_nbv_train_RW_sam3_pipeline.launch recon_target:=FRUIT
+  -->
+  <arg name="planners" default="ssl_semantic_nbv_NOCOLOR"/>
+  <arg name="recon_target" default="FRUIT"/>
+  <arg name="max_episode" default="2000"/>
+  <arg name="pretrained_ckpt" default=""/>
+  <arg name="out_dir" default=""/>
+  <arg name="overwrite" default="false"/>
+
+  <node name="ssl_nbv_train_rw_sam3" type="ssl_nbv_train_rw_sam3_pipeline.py" pkg="drl_nbv_plan" output="screen" required="true">
+    <param name="planners" type="str" value="$(arg planners)"/>
+    <param name="recon_target" value="$(arg recon_target)"/>
+    <param name="max_episode" value="$(arg max_episode)"/>
+    <param if="$(eval pretrained_ckpt != '')" name="pretrained_ckpt" value="$(arg pretrained_ckpt)"/>
+    <param if="$(eval out_dir != '')" name="out_dir" value="$(arg out_dir)"/>
+    <param name="overwrite" value="$(arg overwrite)"/>
+  </node>
+</launch>
